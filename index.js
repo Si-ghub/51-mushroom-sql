@@ -33,13 +33,19 @@ app.init = async () => {
     console.log(`Grybautojai: ${uniqueGatherers.join(', ')}.`);
 
     // 3. Isspausdinti, brangiausio grybo pavadinima
-    sql = 'SELECT MAX(price) AS LargestPrice, `mushroom` FROM `mushroom`';
+    sql = 'SELECT MAX(price) AS HighestPrice, `mushroom` FROM `mushroom`';
     [rows] = await connection.execute(sql);
-    const mushroom = rows[0].mushroom
-    const mushroomNameUpperCase = mushroom.charAt(0).toUpperCase() + mushroom.slice(1);
-    console.log(`Brangiausias grybas yra: ${mushroomNameUpperCase}.`);
+    const mushroomHighest = rows[0].mushroom
+    const mushroomHighestNameUpperCase = mushroomHighest.charAt(0).toUpperCase() + mushroomHighest.slice(1);
+    console.log(`Brangiausias grybas yra: ${mushroomHighestNameUpperCase}.`);
 
     // 4. Isspausdinti, pigiausio grybo pavadinima
+    // sql = 'SELECT MIN(price) AS LowestPrice, `mushroom` FROM `mushroom` ASC';
+    sql = ' SELECT * FROM`mushroom` ORDER BY`mushroom`.`price` ASC';
+    [rows] = await connection.execute(sql);
+    const mushroomLowest = rows[0].mushroom;
+    const mushroomLowestNameUpperCase = mushroomLowest.charAt(0).toUpperCase() + mushroomLowest.slice(1);
+    console.log(`Pigiausias grybas yra: ${mushroomLowestNameUpperCase}.`);
 
     // 5. Isspausdinti, visu kiek vidutiniskai reikia grybu, jog jie svertu 1 kilograma (suapvalinti iki vieno skaiciaus po kablelio), 
     // isrikiuojant pagal pavadinima nuo abeceles pradzios link pabaigos
