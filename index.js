@@ -33,7 +33,7 @@ app.init = async () => {
     console.log(`Grybautojai: ${uniqueGatherers.join(', ')}.`);
 
     // 3. Isspausdinti, brangiausio grybo pavadinima
-    sql = 'SELECT MAX(price) AS HighestPrice, `mushroom` FROM `mushroom`';
+    sql = 'SELECT * FROM `mushroom` ORDER BY `mushroom`.`price` DESC';
     [rows] = await connection.execute(sql);
     const mushroomHighest = rows[0].mushroom
     const mushroomHighestNameUpperCase = mushroomHighest.charAt(0).toUpperCase() + mushroomHighest.slice(1);
