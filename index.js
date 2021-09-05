@@ -17,16 +17,20 @@ app.init = async () => {
     // 1. Isspausdinti, visu grybu pavadinimus ir ju kainas, grybus isrikiuojant nuo brangiausio link pigiausio
     sql = 'SELECT `mushroom`, `price` FROM `mushroom` ORDER BY `mushroom` .`price` DESC';
     [rows] = await connection.execute(sql);
-
     let price = 0;
     console.log(`Grybai:`);
     for (let index = 0; index < rows.length; index++) {
         const mushroomName = rows[index].mushroom;
+        const mushroomNameUpperCase = mushroomName[0].toUpperCase() + mushroomName.slice(1);
         const mushroomPrice = rows[index].price;
-        console.log(`${index + 1}) ${mushroomName} ${mushroomPrice}`);
+        console.log(`${index + 1}) ${mushroomNameUpperCase} - ${mushroomPrice} EUR/kg`);
     }
 
     // 2. Isspausdinti, visu grybautoju vardus
+    sql = 'SELECT `name` FROM `gatherer`';
+    [rows] = await connection.execute(sql);
+    const uniqueGatherers = rows.map(obj => obj.name);
+    console.log(`Grybautojai: ${uniqueGatherers.join(', ')}.`);
 
     // 3. Isspausdinti, brangiausio grybo pavadinima
 
