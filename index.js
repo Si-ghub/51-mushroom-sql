@@ -88,23 +88,67 @@ app.init = async () => {
     }
 
     // 7
-    sql = 'SELECT `name`, SUM(`count`*`price`*`weight`/1000) as amount \
+    sql = 'SELECT `name`, SUM(`count` * `price` * `weight`/ 1000) as amount \
             FROM `basket` \
             LEFT JOIN `gatherer` \
                 ON `gatherer`.`id` = `basket`.`gatherer_id` \
             LEFT JOIN `mushroom`\
                 ON `mushroom`.`id` = `basket`.`mushroom_id` \
             GROUP BY `basket`.`gatherer_id` \
-            ORDER BY `amount` DESC ';
+            ORDER BY `amount` DESC';
+    // SQL uzrasymo eiliskumas, ka po ko dedam:
+    // SELECT + SUM - selectinam ir susumuojam. Naudojam amount
+    // LEFT JOIN sujungiam dvi lenteles
+    //     ON sulyginam, kas skirtingose lentelese yra bendro
+    // GROUP BY grupavimas reiksmiu pagal pasirinkta parametra
+    // ORDER BY pagal ka rikiuojam
 
     [rows] = await connection.execute(sql);
-    console.log(rows);
 
     console.log('Grybu krepselio kainos pas grybautoja:');
     i = 0;
     for (const item of rows) {
         console.log(`${++i}) ${upName(item.name)} - ${+item.amount} EUR`);
     }
+
+    // 8
+    // // lang= 'eng' - paduodam default reiksme
+    async function mushroomsByRating(lang = 'en') {
+        sql = 'SELECT `ratings`.`id`, `name_' + lang + '`, SUM(`count`) as amount\
+    FROM `ratings`\
+    LEFT JOIN `mushroom`\
+    ON `mushroom`.`rating` = `ratings`.`id`\
+    LEFT JOIN `basket`\
+    ON `basket`.`mushroom_id` = `mushroom`.`id`\
+    GROUP BY `ratings`.`id`\
+    ORDER BY `ratings`.`id` DESC';
+        [rows] = await connection.execute(sql);
+        console.log(rows);
+    }
+    const kalbaLt = mushroomsByRating('lt');
+    const kalbaEn = mushroomsByRating('en');
+
+    // Kitas budas, geresnis
+    // async function mushroomByRating(lang) {
+
+    //     const langList = ['en', 'lt', 'esp', 'lv'];
+
+    //     lang = langList.includes(lang) ? lang : langList[0]; // jei reiktu keisti kalbas
+
+    //     sql = 'SELECT `ratings`.`id`, `name_' + lang + '`, SUM(`count`) as amount\
+    //     FROM `ratings`\
+    //     LEFT JOIN `mushroom`\
+    //         ON `mushroom`.`rating`=`ratings`.`id`\
+    //     LEFT JOIN `basket`\
+    //         ON `basket`.`mushroom_id` =`mushroom`.`id`\
+    //     GROUP BY `ratings`.`id`\
+    //     ORDER BY `ratings`.`id` DESC';
+
+    //     [rows] = await connection.execute(sql);
+
+    // }
+    // await mushroomByRating('lt');
+    // await mushroomByRating('en');
 
 
     // // MY LOGIC BELOW
