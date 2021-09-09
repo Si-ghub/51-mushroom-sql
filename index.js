@@ -133,7 +133,7 @@ app.init = async () => {
 
     //     const langList = ['en', 'lt', 'esp', 'lv'];
 
-    //     lang = langList.includes(lang) ? lang : langList[0]; // jei reiktu keisti kalbas
+    //     lang = langList.includes(lang) ? lang : langList[0];
 
     //     sql = 'SELECT `ratings`.`id`, `name_' + lang + '`, SUM(`count`) as amount\
     //     FROM `ratings`\
@@ -146,9 +146,60 @@ app.init = async () => {
 
     //     [rows] = await connection.execute(sql);
 
+    //     if (lang === 'lt') {
+
+    //         console.log(`Grybu kiekis pagal ivertinima:`);
+    //         for (let { id, name_lt, amount } of rows) {
+    //             if (amount == null) {
+    //                 amount = 0;
+    //             }
+    //             console.log(`${id} zvaigzdutes (${name_lt}) - ${amount} grybai`);
+    //         }
+    //     } else {
+    //         console.log('');
+    //         console.log(`Mushrooms count by rating:`);
+    //         for (let { id, name_en, amount } of rows) {
+    //             if (amount == null) {
+    //                 amount = 0;
+    //             }
+    //             console.log(`${id} stars (${name_en}) - ${amount} grybai`);
+    //         }
+    //     }
     // }
     // await mushroomByRating('lt');
     // await mushroomByRating('en');
+
+    // 9
+    sql = 'SELECT `mushroom` as name, `rating`\
+    FROM `mushroom`\
+    WHERE `rating` >= 4\
+    ORDER BY `rating` ASC' ;
+
+    [rows] = await connection.execute(sql);
+
+    let mushroomList = [];
+
+    for (let { name, rating } of rows) {
+        mushroomList.push(upName(name))
+    }
+    console.log('');
+    console.log(`Grybai: ${mushroomList.join(', ')}.`);
+
+    // 
+    sql = 'SELECT `mushroom` as name, `rating` \
+    FROM `mushroom`\
+    WHERE `rating` IN (1, 3, 5)\
+    ORDER BY `rating` ASC';
+    [rows] = await connection.execute(sql);
+    mushroomList = [];
+
+    for (let { name, rating } of rows) {
+        mushroomList.push(upName(name))
+    }
+    console.log(rows);
+    console.log(`Grybai: ${mushroomList.join(', ')}.`);
+
+
 
 
     // // MY LOGIC BELOW
